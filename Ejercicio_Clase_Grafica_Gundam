@@ -1,0 +1,451 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
+import requests
+from io import BytesIO
+
+class ComparadorGundams:
+    def __init__(self):
+        self.gundams = {
+            'V Gundam': {
+                'piloto': 'Amuro Ray',
+                'tipo_piloto': 'New Type',
+                'nivel_piloto': 10,
+                'estadisticas': {
+                    'Velocidad': 8,
+                    'Armadura': 7,
+                    'Armamento': 9,
+                    'Movilidad': 9,
+                    'Tecnología': 8,
+                    'Defensa': 8,
+                    'Psycho Frame': 8,
+                    'Funnels': 6,
+                    'Habilidad Piloto': 10
+                },
+                'color': 'blue',
+                'imagen_url': 'https://i.pinimg.com/1200x/7c/b8/85/7cb88550061f33579a898d12503d569e.jpg'
+            },
+            'Sazabi': {
+                'piloto': 'Char Aznable',
+                'tipo_piloto': 'New Type',
+                'nivel_piloto': 7,
+                'estadisticas': {
+                    'Velocidad': 6,
+                    'Armadura': 9,
+                    'Armamento': 10,
+                    'Movilidad': 7,
+                    'Tecnología': 7,
+                    'Defensa': 9,
+                    'Psycho Frame': 7,
+                    'Funnels': 6,
+                    'Habilidad Piloto': 7
+                },
+                'color': 'red',
+                'imagen_url': 'https://i.pinimg.com/1200x/02/db/8a/02db8a74fd75230f0889153466921318.jpg'
+            },
+            'Unicorn Gundam': {
+                'piloto': 'Banagher Links',
+                'tipo_piloto': 'Cyber New Type',
+                'nivel_piloto': 9,
+                'estadisticas': {
+                    'Velocidad': 9,
+                    'Armadura': 8,
+                    'Armamento': 8,
+                    'Movilidad': 8,
+                    'Tecnología': 10,
+                    'Defensa': 9,
+                    'Psycho Frame': 10,
+                    'Funnels': 0,
+                    'Habilidad Piloto': 9
+                },
+                'color': 'purple',
+                'imagen_url': 'https://i.pinimg.com/1200x/52/1d/2a/521d2a7e1fc0166c963a143ab6ac7bae.jpg'
+            },
+            'Sinanju': {
+                'piloto': 'Full Frontal',
+                'tipo_piloto': 'Cyber New Type',
+                'nivel_piloto': 9,
+                'estadisticas': {
+                    'Velocidad': 10,
+                    'Armadura': 8,
+                    'Armamento': 9,
+                    'Movilidad': 10,
+                    'Tecnología': 8,
+                    'Defensa': 7,
+                    'Psycho Frame': 6,
+                    'Funnels': 0,
+                    'Habilidad Piloto': 9
+                },
+                'color': 'gold',
+                'imagen_url': 'https://i.pinimg.com/1200x/46/79/fe/4679fe1c5294d017651ef91b8f295711.jpg'
+            },
+            'Kshatriya': {
+                'piloto': 'Marida Cruz',
+                'tipo_piloto': 'Cyber New Type',
+                'nivel_piloto': 8,
+                'estadisticas': {
+                    'Velocidad': 5,
+                    'Armadura': 8,
+                    'Armamento': 9,
+                    'Movilidad': 6,
+                    'Tecnología': 8,
+                    'Defensa': 8,
+                    'Psycho Frame': 7,
+                    'Funnels': 24,
+                    'Habilidad Piloto': 8
+                },
+                'color': 'green',
+                'imagen_url': 'https://i.pinimg.com/736x/0a/24/cc/0a24cc74549fd771c1aa2f70f769096d.jpg'
+            },
+            'Banshee': {
+                'piloto': 'Riddhe Marcenas',
+                'tipo_piloto': 'New Type',
+                'nivel_piloto': 6,
+                'estadisticas': {
+                    'Velocidad': 8,
+                    'Armadura': 9,
+                    'Armamento': 8,
+                    'Movilidad': 7,
+                    'Tecnología': 9,
+                    'Defensa': 9,
+                    'Psycho Frame': 9,
+                    'Funnels': 0,
+                    'Habilidad Piloto': 6
+                },
+                'color': 'black',
+                'imagen_url': 'https://i.pinimg.com/736x/04/ec/71/04ec71a98fcfea7ffa99faff35dcaa60.jpg'
+            }
+        }
+        
+        self.imagenes = {}
+        self.cargar_imagenes()
+    
+    def cargar_imagenes(self):
+        print("Cargando imágenes de Gundams...")
+        for nombre, info in self.gundams.items():
+            try:
+                response = requests.get(info['imagen_url'], timeout=10)
+                img = Image.open(BytesIO(response.content))
+                self.imagenes[nombre] = img
+                print(f"✅ {nombre} - Cargado correctamente")
+            except Exception as e:
+                print(f"❌ Error cargando {nombre}: {e}")
+                self.imagenes[nombre] = None
+    
+    def mostrar_menu(self):
+        print("\n" + "="*50)
+        print("           🚀 COMPARADOR DE GUNDAMS 🚀")
+        print("="*50)
+        print("Gundams disponibles:")
+        for i, gundam in enumerate(self.gundams.keys(), 1):
+            piloto = self.gundams[gundam]['piloto']
+            tipo = self.gundams[gundam]['tipo_piloto']
+            print(f"  {i}. {gundam:15} - {piloto} ({tipo})")
+        print("  " + "─" * 45)
+        print("  0. Comparar TODOS los Gundams")
+        print("  " + "─" * 45)
+    
+    def obtener_seleccion(self):
+        self.mostrar_menu()
+        try:
+            print("\n📝 INSTRUCCIONES: Usa los NÚMEROS del menú (ej: 1,3,5)")
+            print("   0 = Todos los Gundams")
+            seleccion = input("🎯 Selecciona por NÚMERO los Gundams a comparar: ")
+            
+            if seleccion.strip() == '0':
+                return list(self.gundams.keys())
+            
+            indices = [int(x.strip()) for x in seleccion.split(',')]
+            gundams_seleccionados = []
+            
+            for idx in indices:
+                if 1 <= idx <= len(self.gundams):
+                    gundam = list(self.gundams.keys())[idx - 1]
+                    gundams_seleccionados.append(gundam)
+                else:
+                    print(f"❌ NÚMERO {idx} inválido. Usa números entre 1-{len(self.gundams)}")
+                    return None
+            
+            return gundams_seleccionados
+        except ValueError:
+            print("❌ Entrada inválida. Por favor usa sólo NÚMEROS separados por comas.")
+            return None
+    
+    def mostrar_imagen_gundam(self, gundam):
+        if gundam in self.imagenes and self.imagenes[gundam] is not None:
+            plt.figure(figsize=(8, 6))
+            plt.imshow(self.imagenes[gundam])
+            piloto_info = f"{self.gundams[gundam]['piloto']} ({self.gundams[gundam]['tipo_piloto']})"
+            plt.title(f'{gundam}\n{piloto_info}', 
+                     fontsize=14, fontweight='bold', pad=20)
+            plt.axis('off')
+            plt.tight_layout()
+            plt.show()
+        else:
+            print(f"⚠️  Imagen no disponible para {gundam}")
+    
+    def grafica_radar_gundams(self, gundams_seleccionados):
+        categorias = list(self.gundams[gundams_seleccionados[0]]['estadisticas'].keys())
+        
+        angulos = np.linspace(0, 2*np.pi, len(categorias), endpoint=False).tolist()
+        angulos += angulos[:1]
+        
+        fig, ax = plt.subplots(figsize=(12, 10), subplot_kw=dict(projection='polar'))
+        
+        for gundam in gundams_seleccionados:
+            stats = list(self.gundams[gundam]['estadisticas'].values())
+            stats += stats[:1]
+            color = self.gundams[gundam]['color']
+            piloto = self.gundams[gundam]['piloto']
+            tipo_piloto = self.gundams[gundam]['tipo_piloto']
+            
+            ax.plot(angulos, stats, 'o-', linewidth=3, 
+                   label=f'{gundam}\n({piloto} - {tipo_piloto})', 
+                   color=color, markersize=6)
+            ax.fill(angulos, stats, alpha=0.2, color=color)
+        
+        ax.set_xticks(angulos[:-1])
+        ax.set_xticklabels(categorias, fontsize=11, fontweight='bold')
+        ax.set_ylim(0, 10)
+        ax.set_yticks([2, 4, 6, 8, 10])
+        ax.grid(True, alpha=0.3)
+        
+        titulo = 'Comparación de Gundams' if len(gundams_seleccionados) > 1 else f'Estadísticas de {gundams_seleccionados[0]}'
+        plt.title(f'{titulo}\n(Escala 1-10)', size=16, y=1.05, fontweight='bold', pad=20)
+        plt.legend(loc='upper right', bbox_to_anchor=(1.4, 1.0), fontsize=9)
+        plt.tight_layout()
+        plt.show()
+    
+    def grafica_barras_gundams(self, gundams_seleccionados):
+        categorias = list(self.gundams[gundams_seleccionados[0]]['estadisticas'].keys())
+        
+        x = np.arange(len(categorias))
+        ancho = 0.8 / len(gundams_seleccionados)
+        
+        plt.figure(figsize=(16, 8))
+        
+        for i, gundam in enumerate(gundams_seleccionados):
+            stats = list(self.gundams[gundam]['estadisticas'].values())
+            color = self.gundams[gundam]['color']
+            desplazamiento = ancho * i
+            
+            plt.bar(x + desplazamiento, stats, width=ancho, label=f'{gundam}', 
+                    alpha=0.8, color=color, edgecolor='black', linewidth=0.5)
+        
+        plt.xlabel('Categorías', fontsize=12, fontweight='bold')
+        plt.ylabel('Puntuación (1-10)', fontsize=12, fontweight='bold')
+        
+        titulo = 'Comparación de Gundams' if len(gundams_seleccionados) > 1 else f'Estadísticas de {gundams_seleccionados[0]}'
+        plt.title(titulo, fontsize=14, fontweight='bold', pad=20)
+        
+        plt.xticks(x + ancho * (len(gundams_seleccionados) - 1) / 2, categorias, 
+                  rotation=45, ha='right', fontweight='bold')
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.grid(True, alpha=0.3, axis='y')
+        plt.ylim(0, 11)
+        plt.tight_layout()
+        plt.show()
+    
+    def mostrar_info_detallada(self, gundam):
+        info = self.gundams[gundam]
+        print(f"\n{'='*60}")
+        print(f"🎯 {gundam.upper()}")
+        print(f"{'='*60}")
+        print(f"👨‍🚀 Piloto: {info['piloto']}")
+        print(f"🧠 Tipo: {info['tipo_piloto']} - Nivel: {info['nivel_piloto']}/10")
+        print("\n📊 Estadísticas:")
+        for categoria, valor in info['estadisticas'].items():
+            barra = "█" * valor + "░" * (10 - valor)
+            print(f"  {categoria:15}: {barra} {valor}/10")
+        
+        self.analizar_gundam(gundam)
+    
+    def analizar_gundam(self, gundam):
+        stats = self.gundams[gundam]['estadisticas']
+        tipo_piloto = self.gundams[gundam]['tipo_piloto']
+        nivel_piloto = self.gundams[gundam]['nivel_piloto']
+        
+        print(f"\n🔍 Análisis táctico:")
+        
+        caracteristicas = []
+        
+        if nivel_piloto >= 9:
+            if tipo_piloto == 'New Type':
+                caracteristicas.append("🧠 New Type legendario - Habilidades psíquicas máximas")
+            else:
+                caracteristicas.append("🤖 Cyber New Type excepcional - Poder psíquico superior")
+        elif nivel_piloto >= 7:
+            caracteristicas.append(f"⭐ {tipo_piloto} competente - Buen control psíquico")
+        
+        if stats['Psycho Frame'] >= 9:
+            caracteristicas.append("🌀 Sistema Psycho Frame avanzado")
+        elif stats['Psycho Frame'] >= 7:
+            caracteristicas.append("✨ Sistema Psycho Frame estándar")
+            
+        if stats['Funnels'] >= 20:
+            caracteristicas.append("🎯 Funnels masivos (ataque omnidireccional)")
+        elif stats['Funnels'] >= 5:
+            caracteristicas.append("📡 Sistema de Funnels")
+            
+        if stats['Velocidad'] >= 9:
+            caracteristicas.append("🚀 Velocidad excepcional")
+        elif stats['Velocidad'] <= 5:
+            caracteristicas.append("🐢 Movimiento limitado")
+            
+        if stats['Armamento'] >= 9:
+            caracteristicas.append("💥 Armamento pesado")
+            
+        if stats['Movilidad'] >= 9:
+            caracteristicas.append("🤸 Agilidad superior")
+            
+        if stats['Tecnología'] >= 9:
+            caracteristicas.append("🔬 Tecnología de vanguardia")
+        
+        if stats['Habilidad Piloto'] >= 9:
+            caracteristicas.append("🎯 Piloto de élite - Precisión máxima")
+        
+        for carac in caracteristicas:
+            print(f"  • {carac}")
+    
+    def resumen_comparativo(self, gundams_seleccionados):
+        if len(gundams_seleccionados) <= 1:
+            return
+            
+        print(f"\n{'='*60}")
+        print("📈 RESUMEN COMPARATIVO")
+        print(f"{'='*60}")
+        
+        categorias = list(self.gundams[gundams_seleccionados[0]]['estadisticas'].keys())
+        
+        for categoria in categorias:
+            valores = [self.gundams[g]['estadisticas'][categoria] for g in gundams_seleccionados]
+            max_val = max(valores)
+            mejores = [g for g in gundams_seleccionados if self.gundams[g]['estadisticas'][categoria] == max_val]
+            
+            if len(mejores) == 1:
+                print(f"🏆 {categoria:15}: {mejores[0]} ({max_val}/10)")
+            else:
+                print(f"🏆 {categoria:15}: Empate entre {', '.join(mejores)} ({max_val}/10)")
+    
+    def calcular_ranking_final(self, gundams_seleccionados):
+        print(f"\n{'='*60}")
+        print("🏆 RANKING FINAL - MEJORES GUNDAMS")
+        print(f"{'='*60}")
+        
+        puntuaciones = {}
+        for gundam in gundams_seleccionados:
+            stats = self.gundams[gundam]['estadisticas']
+            puntuacion_total = sum(stats.values())
+            puntuaciones[gundam] = puntuacion_total
+        
+        ranking = sorted(puntuaciones.items(), key=lambda x: x[1], reverse=True)
+        
+        for i, (gundam, puntuacion) in enumerate(ranking, 1):
+            max_puntos = len(self.gundams[gundam]['estadisticas']) * 10
+            porcentaje = (puntuacion / max_puntos) * 100
+            
+            print(f"\n#{i} {gundam}")
+            print(f"   Puntuación total: {puntuacion}/{max_puntos} puntos")
+            print(f"   Eficiencia general: {porcentaje:.1f}%")
+            print(f"   Piloto: {self.gundams[gundam]['piloto']} ({self.gundams[gundam]['tipo_piloto']})")
+            
+            if i <= 3:
+                self.mostrar_fortalezas(gundam)
+        
+        if ranking:
+            ganador = ranking[0][0]
+            print(f"\n🎉 ¡{ganador} es el GUNDAM GANADOR!")
+            print(f"   Conductor: {self.gundams[ganador]['piloto']} ({self.gundams[ganador]['tipo_piloto']})")
+            self.analizar_victoria(ganador, ranking)
+    
+    def mostrar_fortalezas(self, gundam):
+        stats = self.gundams[gundam]['estadisticas']
+        mejores_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)[:3]
+        
+        print("   Fortalezas principales:")
+        for categoria, valor in mejores_stats:
+            print(f"     • {categoria}: {valor}/10")
+    
+    def analizar_victoria(self, ganador, ranking):
+        stats_ganador = self.gundams[ganador]['estadisticas']
+        tipo_piloto = self.gundams[ganador]['tipo_piloto']
+        nivel_piloto = self.gundams[ganador]['nivel_piloto']
+        
+        print(f"\n🔍 ANÁLISIS DE LA VICTORIA:")
+        
+        if nivel_piloto >= 9:
+            if tipo_piloto == 'New Type':
+                print("   • New Type legendario - Habilidades psíquicas insuperables")
+            else:
+                print("   • Cyber New Type excepcional - Control mental superior")
+        
+        if stats_ganador['Psycho Frame'] >= 9:
+            print("   • Sistema Psycho Frame avanzado - Ventaja táctica decisiva")
+        if stats_ganador['Velocidad'] >= 9 and stats_ganador['Movilidad'] >= 9:
+            print("   • Combinación perfecta de velocidad y movilidad")
+        if stats_ganador['Armamento'] >= 9 and stats_ganador['Tecnología'] >= 9:
+            print("   • Tecnología avanzada con poder de fuego excepcional")
+        if stats_ganador['Habilidad Piloto'] >= 9:
+            print("   • Piloto de élite - Precisión y timing perfectos")
+        
+        if len(ranking) > 1:
+            segundo = ranking[1][0]
+            diff = ranking[0][1] - ranking[1][1]
+            print(f"   • Supera a {segundo} por {diff} puntos de eficiencia")
+        
+        max_stat = max(stats_ganador.items(), key=lambda x: x[1])
+        print(f"   • Mayor fortaleza: {max_stat[0]} ({max_stat[1]}/10)")
+    
+    def ejecutar(self):
+        print("🚀 Iniciando Comparador de Gundams...")
+        
+        while True:
+            gundams_seleccionados = self.obtener_seleccion()
+            
+            if not gundams_seleccionados:
+                print("❌ Selección inválida. Intenta nuevamente.")
+                continue
+            
+            print(f"\n✅ Comparando: {', '.join(gundams_seleccionados)}")
+            
+            ver_imagenes = input("\n👀 ¿Quieres ver las imágenes de los Gundams? (s/n): ")
+            if ver_imagenes.lower() == 's':
+                for gundam in gundams_seleccionados:
+                    self.mostrar_imagen_gundam(gundam)
+            
+            for gundam in gundams_seleccionados:
+                self.mostrar_info_detallada(gundam)
+            
+            if len(gundams_seleccionados) > 1:
+                self.resumen_comparativo(gundams_seleccionados)
+                self.calcular_ranking_final(gundams_seleccionados)
+            
+            print(f"\n{'─'*50}")
+            print("📊 OPCIONES DE GRÁFICAS:")
+            print("  1. Gráfica de Radar")
+            print("  2. Gráfica de Barras")
+            print("  3. Ambas gráficas")
+            print("  4. Continuar sin gráficas")
+            
+            opcion = input("🎨 Selecciona (1-4): ")
+            
+            if opcion in ['1', '3']:
+                print("🔄 Generando gráfica de radar...")
+                self.grafica_radar_gundams(gundams_seleccionados)
+            if opcion in ['2', '3']:
+                print("🔄 Generando gráfica de barras...")
+                self.grafica_barras_gundams(gundams_seleccionados)
+            
+            continuar = input("\n🔄 ¿Quieres hacer otra comparación? (s/n): ")
+            if continuar.lower() != 's':
+                print("\n👋 ¡Hasta la próxima, piloto!")
+                break
+
+if __name__ == "__main__":
+    try:
+        comparador = ComparadorGundams()
+        comparador.ejecutar()
+    except KeyboardInterrupt:
+        print("\n\n👋 Programa interrumpido por el usuario")
+    except Exception as e:
+        print(f"\n❌ Error inesperado: {e}")
