@@ -1,0 +1,8 @@
+Este es mi primer archivo
+Esta línea ha sido modificada
+Esta línea ha sido insertada
+Este es mi primer archivo 3
+	Este es mi primer archivo 4
+Este es mi primer archivo 2
+Este es mi primer archivo 3
+	Este es mi primer archivo 4
